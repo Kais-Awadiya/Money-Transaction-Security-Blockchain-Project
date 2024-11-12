@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money-Transaction Security Blockchain</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEJf+R8u7y3BLVf6tw6Dg5g5luwVSOvO0zjsqBbW5F/cVYm5lMNS7/mK4SkGz" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        /* General Body Styling */
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
+            color: #34495e;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        /* Card Styling */
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            font-size: 24px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            padding: 20px;
+        }
+
+        .card-body {
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+        /* Block List Styling */
+        .block-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .block-item {
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .block-item strong {
+            color: #2c3e50;
+        }
+
+        /* Form Field Styling */
+        .form-group label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #bdc3c7;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        /* Button Styling */
+        .btn-custom {
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #2980b9;
+        }
+
+        .mine-button {
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            width: 100%;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .mine-button:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-custom:focus,
+        .mine-button:focus {
+            box-shadow: none;
+            outline: none;
+        }
+
+        /* Spacing Improvements */
+        .container {
+            margin-top: 50px;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .card {
+                margin: 20px 0;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Money-Transaction Security Blockchain</h1>
+
+        <!-- Blockchain Display Section -->
+        <div class="card">
+            <div class="card-header">
+                Blockchain
+            </div>
+            <div class="card-body">
+                <ul class="block-list">
+                    {% for block in blockchain.chain %}
+                        <li class="block-item">
+                            <strong>Block #{{ block.index }}</strong><br>
+                            <strong>Data:</strong> {{ block.data }}<br>
+                            <strong>Hash:</strong> {{ block.hash }}<br>
+                            <strong>Previous Hash:</strong> {{ block.previous_hash }}<br>
+                            <strong>Timestamp:</strong> {{ block.timestamp }}<br>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add Transaction Form -->
+        <div class="card">
+            <div class="card-header">
+                Add a Transaction
+            </div>
+            <div class="card-body">
+                <form action="/add" method="POST">
+                    <div class="form-group mb-3">
+                        <label for="sender">Sender:</label>
+                        <input type="text" id="sender" name="sender" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="receiver">Receiver:</label>
+                        <input type="text" id="receiver" name="receiver" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-custom">Add Transaction</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mine Block Section -->
+        <div class="card">
+            <div class="card-header">
+                Mine a Block
+            </div>
+            <div class="card-body">
+                <form action="/mine" method="GET">
+                    <button type="submit" class="btn mine-button">Mine Block</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz4fnFO9gybBfS6zHiCzj7U9E7t2oFQdY7p55t2v8A5j3DA9WRz13u8pg5a" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+        integrity="sha384-pzjw8f+ua7Kw1TIq0JgzOn0kxc9dZ9hox0P+MyIwp0fvF2LXYxcncuQwrSTb1Uhs" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
