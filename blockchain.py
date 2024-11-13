@@ -30,6 +30,12 @@ class Blockchain:
     def __init__(self):
         # Initialize the chain with the genesis (first) block
         self.chain = []
+        self.users = {
+            "Jenish": 500.00,
+            "Kais": 300.00,
+            "Ghata": 200.00,
+            "Miner": 0.00
+        }  # Dictionary to store user accounts and balances
         self.create_genesis_block()
 
     def create_genesis_block(self):
@@ -38,22 +44,54 @@ class Blockchain:
         self.chain.append(genesis_block)
 
     def add_block(self, data):
-        # Add a new block with the given data
+        # Update user balances before adding the block
+        sender = data["sender"]
+        receiver = data["receiver"]
+        amount = data["amount"]
+
+        # Ensure sender and receiver are in the users dictionary
+        if sender not in self.users:
+            self.users[sender] = 0
+        if receiver not in self.users:
+            self.users[receiver] = 0
+
+        # Deduct balance from sender and add to receiver
+        if sender != "Miner":
+            if self.users[sender] < amount:
+                raise ValueError(f"{sender} does not have enough balance!")
+            self.users[sender] -= amount
+        self.users[receiver] += amount
+
+        # Create and add the new block
         previous_block = self.chain[-1]
         new_block = Block(len(self.chain), time(), data, previous_block.hash)
         self.chain.append(new_block)
         return new_block
 
+    def is_chain_valid(self):
+        for i in range(1, len(self.chain)):
+            current_block = self.chain[i]
+            previous_block = self.chain[i - 1]
 
+            # Check if the current block's hash is valid
+            if current_block.hash != current_block.calculate_hash():
+                print(f"Block {current_block.index} has been tampered with!")
+                return False
 
-# # Test code to check the blockchain functionality and PoW
+            # Check if the previous_hash of the current block matches the hash of the previous block
+            if current_block.previous_hash != previous_block.hash:
+                print(f"Block {current_block.index}'s previous hash does not match!")
+                return False
 
-# blockchain = Blockchain()
+            # Check if the hash meets the difficulty requirement
+            if not current_block.hash.startswith('0' * current_block.difficulty):
+                print(f"Block {current_block.index} does not meet difficulty requirements!")
+                return False
 
-# # Add some blocks with transactions
-# blockchain.add_block({"sender": "Alice", "receiver": "Bob", "amount": 100})
-# blockchain.add_block({"sender": "Bob", "receiver": "Charlie", "amount": 50})
-
-# # Print out all blocks in the blockchain
-# for block in blockchain.chain:
-#     print(f"Block #{block.index} - Data: {block.data} - Hash: {block.hash}")
+        print("Blockchain is valid.")
+        return True
+    
+    def reset_chain(self):
+        # Clear the chain and create a new genesis block
+        self.chain = []
+        self.create_genesis_block()
